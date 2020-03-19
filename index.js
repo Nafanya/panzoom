@@ -18,6 +18,7 @@ var makeDomController = require('./lib/domController.js');
 var defaultZoomSpeed = 1;
 var defaultDoubleTapZoomSpeed = 1.75;
 var doubleTapSpeedInMS = 300;
+var singleTapSpeedInMs = 200;
 
 module.exports = createPanZoom;
 
@@ -81,6 +82,7 @@ function createPanZoom(domElement, options) {
   }
 
   var frameAnimation;
+  var lastTouchStartTime = 0;
   var lastTouchEndTime = 0;
   var lastSingleFingerOffset;
   var touchInProgress = false;
@@ -617,6 +619,8 @@ function createPanZoom(domElement, options) {
 
     smoothScroll.cancel();
     startTouchListenerIfNeeded();
+
+    lastTouchStartTime = new Date();
   }
 
   function startTouchListenerIfNeeded() {
@@ -697,6 +701,13 @@ function createPanZoom(domElement, options) {
       }
 
       lastTouchEndTime = now;
+
+      if (now - lastTouchStartTime < singleTapSpeedInMs) {
+        if (options.onClick) {
+          options.onClick(e);
+          return;
+        }
+      }
 
       touchInProgress = false;
       triggerPanEnd();

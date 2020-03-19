@@ -25,6 +25,7 @@ declare module "panzoom" {
     beforeMouseDown?: (e: MouseEvent) => void;
     autocenter?: boolean;
     onTouch?: (e: TouchEvent) => void;
+    onClick?: (e: Event) => void;
     onDoubleClick?: (e: Event) => void;
     smoothScroll?: boolean;
     controller?: SVGElement | HTMLElement;
