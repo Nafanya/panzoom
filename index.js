@@ -18,7 +18,7 @@ var makeDomController = require('./lib/domController.js');
 var defaultZoomSpeed = 1;
 var defaultDoubleTapZoomSpeed = 1.75;
 var doubleTapSpeedInMS = 300;
-var singleTapSpeedInMs = 200;
+var clickDistanceThreshold = 5;
 
 module.exports = createPanZoom;
 
@@ -702,11 +702,10 @@ function createPanZoom(domElement, options) {
 
       lastTouchEndTime = now;
 
-      if (now - lastTouchStartTime < singleTapSpeedInMs) {
-        if (options.onClick) {
-          options.onClick(e);
-          return;
-        }
+      let dx = Math.abs(lastSingleFingerOffset.x - mouseX);
+      let dy = Math.abs(lastSingleFingerOffset.y - mouseY);
+      if (dx * dx + dy * dy <= clickDistanceThreshold * clickDistanceThreshold) {
+        api.fire('panclick', e);
       }
 
       touchInProgress = false;
